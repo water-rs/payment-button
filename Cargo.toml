@@ -1,0 +1,182 @@
+[workspace]
+members = ["examples/payment-button", "tests/mounted"]
+resolver = "2"
+
+[package]
+name = "waterui-payment-button"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.100"
+authors = ["Lexo Liu <me@lexo.cool>"]
+license = "Apache-2.0 OR MIT"
+readme = "README.md"
+repository = "https://github.com/water-rs/payment-button"
+description = "Official WaterUI native payment button plugin built on AppleView and AndroidView"
+keywords = ["payment", "apple-pay", "google-pay", "waterui", "gui"]
+categories = ["gui"]
+
+[lints.rust]
+missing_docs = "warn"
+missing_debug_implementations = "warn"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+style = { level = "warn", priority = -1 }
+correctness = { level = "warn", priority = -1 }
+complexity = { level = "warn", priority = -1 }
+suspicious = { level = "warn", priority = -1 }
+perf = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+undocumented_unsafe_blocks = "warn"
+multiple_crate_versions = "allow"
+
+# Request `com.apple.developer.in-app-payments` entitlement via the app's
+# `[app_values] apple_pay_merchant_ids` declaration in `Water.toml`.
+[[package.metadata.waterui.app-value]]
+key = "apple_pay_merchant_ids"
+
+[package.metadata.waterui.android]
+kotlin-sources = ["android/PayButtonHelper.kt"]
+maven = ["com.google.android.gms:play-services-wallet:20.0.0"]
+
+[[package.metadata.waterui.android.meta-data]]
+name = "com.google.android.gms.wallet.api.enabled"
+value = true
+
+[[package.metadata.waterui.android.keep]]
+class = "dev.waterui.payment.PayButtonHelper"
+members = [
+    "public static android.view.View createContainer(android.content.Context, int, int, float, java.lang.String, long)",
+    "public static void updateContainer(android.view.View, int, int, float, java.lang.String, long)",
+    "public static void detachContainer(android.view.View)",
+    "public static native void nativeOnClick(long)",
+]
+
+[target.'cfg(any(target_os = "macos", target_os = "ios", target_os = "android"))'.dependencies]
+nami = { version = "0.13", default-features = false }
+waterui = { version = "0.5.2", default-features = false }
+waterui-core = { version = "0.5.1", default-features = false }
+
+[target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+objc2-core-foundation = { version = "0.3.2", default-features = false, features = ["std", "CFCGTypes"] }
+objc2-pass-kit = { version = "0.3.2", default-features = false, features = ["std", "PKPaymentButton", "PKConstants", "objc2-core-foundation"] }
+waterui-apple = { version = "0.1.0", git = "https://github.com/water-rs/waterui", branch = "main", default-features = false }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-pass-kit = { version = "0.3.2", default-features = false, features = ["std", "PKPaymentButton", "PKConstants", "objc2-app-kit"] }
+
+[target.'cfg(target_os = "android")'.dependencies]
+hydrolysis = { version = "0.3.1", default-features = false }
+jni = { version = "0.22", default-features = false }
+
+[target.'cfg(target_os = "macos")'.dev-dependencies]
+waterui-backend-core = { version = "0.5.2", default-features = false }
+
+[[test]]
+name = "apple_button"
+harness = false
+
+[patch.crates-io]
+waterui-payment-button = { path = "." }
+
+block = { git = "https://github.com/Dicklesworthstone/rust-block", rev = "b39ae859d1ee8e8cb5eef6a516471f1578d26b96" }
+suiteki = { git = "https://github.com/water-rs/suiteki", branch = "main" }
+nami = { git = "https://github.com/water-rs/nami", branch = "main" }
+nami-core = { git = "https://github.com/water-rs/nami", branch = "main" }
+nami-derive = { git = "https://github.com/water-rs/nami", branch = "main" }
+shaderloom = { git = "https://github.com/water-rs/shaderloom", branch = "main" }
+clipboard-rs = { git = "https://github.com/water-rs/clipboard-rs", branch = "windows-0.62-signed" }
+homedir = { git = "https://github.com/water-rs/homedir", branch = "windows-0.62-signed" }
+tree-sitter-md = { git = "https://github.com/lexoliu/tree-sitter-markdown", branch = "wasm-tree-sitter-0.27" }
+
+waterui = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-assets = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-assets-core = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-assets-macros = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-assets-planner = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-apple-os = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-backend-core = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-capture = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-color = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-contract = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-controls = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-core = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-dylib = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-easing = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-form = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-graphics = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-icon = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-inspector-protocol = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-inspector-runtime = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-internal = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-layout = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-locale = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-macros = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-map = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-markdown = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-media = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-meta = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-navigation = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-preview-protocol = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-resources = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-shape = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-structural-transition = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-testing = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-text = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-url = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-video = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-watcher-set = { git = "https://github.com/water-rs/waterui", branch = "main" }
+waterui-webview = { git = "https://github.com/water-rs/waterui", branch = "main" }
+
+waterui-barcode = { git = "https://github.com/water-rs/barcode", branch = "main" }
+waterui-chart = { git = "https://github.com/water-rs/chart", branch = "main" }
+waterui-image = { git = "https://github.com/water-rs/image", branch = "main" }
+waterui-map-gpu = { git = "https://github.com/water-rs/map-gpu", branch = "main" }
+waterui-math = { git = "https://github.com/water-rs/math", branch = "main" }
+waterui-particle = { git = "https://github.com/water-rs/particle", branch = "main" }
+waterui-svg = { git = "https://github.com/water-rs/svg", branch = "main" }
+waterui-video-gpu = { git = "https://github.com/water-rs/video-gpu", branch = "main" }
+
+hydrolysis = { git = "https://github.com/water-rs/waterui", branch = "main" }
+hydrolysis-m3 = { git = "https://github.com/water-rs/hydrolysis-m3", branch = "refactor/4770-slim-core-ui" }
+
+cherenkov = { git = "https://github.com/water-rs/waterui", branch = "main" }
+cherenkov-cpu = { git = "https://github.com/water-rs/waterui", branch = "main" }
+cherenkov-gpu = { git = "https://github.com/water-rs/waterui", branch = "main" }
+filtrate = { git = "https://github.com/water-rs/waterui", branch = "main" }
+filtrate-core = { git = "https://github.com/water-rs/waterui", branch = "main" }
+filtrate-derive = { git = "https://github.com/water-rs/waterui", branch = "main" }
+
+waterkit-audio = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-build = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-camera = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-clipboard = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-codec = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-core = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-deeplink = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-dialog = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-fs = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-haptic = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-location = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-menu = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-permission = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-screen = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-video = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-video-container = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-video-core = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-video-player = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+waterkit-video-streaming = { git = "https://github.com/water-rs/waterkit", branch = "main" }
+
+naga = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+naga-types = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu-core = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu-core-deps-apple = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu-core-deps-emscripten = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu-core-deps-windows-linux-android = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu-hal = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu-naga-bridge = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu-types = { git = "https://github.com/water-rs/wgpu", branch = "fix/metal-shared-memory-v30" }
+wgpu-external-frame = { git = "https://github.com/water-rs/wgpu-external-frame", branch = "main" }
