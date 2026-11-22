@@ -110,7 +110,7 @@ const fn map_theme_ordinal(style: PaymentButtonStyle, color_scheme: ColorScheme)
 /// # Safety
 ///
 /// Registered through JNI `RegisterNatives` for `(J)V`; `callback_token` must
-/// be a token returned from `Arc::into_raw` whose `CallbackGuard` has not yet
+/// be a token returned from `Rc::into_raw` whose `CallbackGuard` has not yet
 /// detached.
 unsafe extern "system" fn native_on_click(
     mut env: EnvUnowned<'_>,

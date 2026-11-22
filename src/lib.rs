@@ -146,7 +146,13 @@ impl PaymentButton {
     ///
     /// Ignored on Apple platforms where `PKPaymentButton` configures appearance
     /// without a payment request.
-    #[cfg_attr(not(target_os = "android"), allow(unused_mut))]
+    #[cfg_attr(
+        not(target_os = "android"),
+        expect(
+            unused_mut,
+            reason = "allowed_payment_methods is stored only on Android"
+        )
+    )]
     pub fn allowed_payment_methods(mut self, json: impl Into<Str>) -> Self {
         #[cfg(target_os = "android")]
         {

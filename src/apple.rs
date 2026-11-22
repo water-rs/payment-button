@@ -15,7 +15,11 @@ use waterui::theme::{ColorScheme, current_color_scheme};
 use waterui::{Environment, Str, View};
 use waterui_apple::objc2::rc::Retained;
 use waterui_apple::objc2::runtime::{AnyObject, NSObject};
-use waterui_apple::objc2::{DefinedClass, MainThreadMarker, MainThreadOnly, define_class, sel};
+#[cfg(target_os = "ios")]
+use waterui_apple::objc2::{ClassType as _, extern_class};
+use waterui_apple::objc2::{
+    DefinedClass, MainThreadMarker, MainThreadOnly, define_class, msg_send, sel,
+};
 #[cfg(target_os = "macos")]
 use waterui_apple::objc2_app_kit::{NSAutoresizingMaskOptions, NSControl, NSView};
 #[cfg(target_os = "ios")]
@@ -32,7 +36,7 @@ use crate::{PaymentButton, PaymentButtonStyle, PaymentButtonType};
 unsafe extern "C" {}
 
 #[cfg(target_os = "ios")]
-waterui_apple::objc2::extern_class!(
+extern_class!(
     /// PassKit's `PKPaymentButton` on iOS, inheriting from `UIButton`.
     #[unsafe(super(UIButton, UIControl, UIView, UIResponder, NSObject))]
     #[thread_kind = MainThreadOnly]
@@ -47,16 +51,12 @@ impl PKPaymentButton {
         button_style: PKPaymentButtonStyle,
         _mtm: MainThreadMarker,
     ) -> Retained<Self> {
-        use waterui_apple::objc2::{ClassType as _, msg_send};
-
         // SAFETY: `PKPaymentButton` exposes `+buttonWithType:style:` returning a
         // retained `+1` autoreleased/retained instance on the main thread.
         unsafe { msg_send![Self::class(), buttonWithType: button_type, style: button_style] }
     }
 
     fn set_corner_radius(&self, corner_radius: CGFloat) {
-        use waterui_apple::objc2::msg_send;
-
         // SAFETY: `PKPaymentButton` exposes `-setCornerRadius:` taking `CGFloat`.
         unsafe { msg_send![self, setCornerRadius: corner_radius] }
     }
@@ -90,7 +90,7 @@ impl ActionTarget {
             .set_ivars(ActionTargetIvars { action, env });
         // SAFETY: `NSObject`'s designated initializer `-init` has no preconditions
         // after `set_ivars`.
-        unsafe { waterui_apple::objc2::msg_send![super(this), init] }
+        unsafe { msg_send![super(this), init] }
     }
 }
 

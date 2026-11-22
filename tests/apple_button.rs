@@ -1,7 +1,9 @@
 //! Main-thread headless verification of `PaymentButton` through `AppleBackend` on macOS.
 
+use std::env;
+
 fn should_list_only() -> bool {
-    std::env::args().any(|arg| arg == "--list")
+    env::args().any(|arg| arg == "--list")
 }
 
 #[cfg(target_os = "macos")]
