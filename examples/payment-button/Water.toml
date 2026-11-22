@@ -1,0 +1,7 @@
+[package]
+type = "playground"
+name = "Payment Button Example"
+bundle_identifier = "com.waterui.example.payment_button"
+
+[app_values]
+apple_pay_merchant_ids = ["merchant.com.waterui.example"]
